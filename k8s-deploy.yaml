@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: web-container
-        image: my-web-app:v1      # 填入剛才編譯好的 Docker 鏡像名稱
+        image: my-web-app:v4     # 填入剛才編譯好的 Docker 鏡像名稱
         imagePullPolicy: Never   # 關鍵！告訴 K8s 直接用本地編譯好的鏡像，不用去網路上下載
         ports:
         - containerPort: 5000
