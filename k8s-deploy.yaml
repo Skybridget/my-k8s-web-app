@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-web-deployment
+  labels:
+    app: my-custom-web
+spec:
+  replicas: 2           # 關鍵！宣告我們要同時跑 2 個副本做負載平衡
+  selector:
+    matchLabels:
+      app: my-custom-web
+  template:
+    metadata:
+      labels:
+        app: my-custom-web
+    spec:
+      containers:
+      - name: web-container
+        image: my-web-app:v1      # 填入剛才編譯好的 Docker 鏡像名稱
+        imagePullPolicy: Never   # 關鍵！告訴 K8s 直接用本地編譯好的鏡像，不用去網路上下載
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-web-service
+spec:
+  selector:
+    app: my-custom-web    # 透過這個標籤，把流量導向上面 Deployment 建立的 Pods
+  ports:
+  - protocol: TCP
+    port: 80              # 外部對外的 Port
+    targetPort: 5000      # 容器內部的 Port
